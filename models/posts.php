@@ -82,5 +82,42 @@
 			$this->category_id = $row['category_id'];
 			$this->category_name = $row['category_name'];
 		}
+
+		// Create Post
+		public function create() {
+			// Create query
+			$query = 'INSERT INTO ' . 
+					$this->table . '
+					SET 
+					title = :title,
+					body = :body,
+					author = :author,
+					category_id = :category_id';
+
+			// Prepare statement
+			$stmt = $this->conn->prepare($query);
+
+			// Clean Data
+			$this->title = htmlspecialchars(strip_tags($this->title));
+			$this->body = htmlspecialchars(strip_tags($this->body));
+			$this->author = htmlspecialchars(strip_tags($this->author));
+			$this->category_id = htmlspecialchars(strip_tags($this->category_id));
+
+			// Bind Data
+			$stmt->bindParam(':title', $this->title);
+			$stmt->bindParam(':body', $this->body);
+			$stmt->bindParam(':author', $this->title);
+			$stmt->bindParam(':category_id', $this->category_id);
+
+			// Execute Query
+			if($stmt->execute()) {
+				return true;
+			}
+
+			// Print error if something goes wrong
+			printf("Error: %s.\n", $stmt->error);
+
+			return false;
+		}
 	}
 ?>
